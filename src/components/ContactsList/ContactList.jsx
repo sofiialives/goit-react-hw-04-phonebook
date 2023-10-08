@@ -1,5 +1,6 @@
 import css from './ContactList.module.css'
 export const ContactsList = ({ filterEdit, deleteContact }) => {
+  console.log(filterEdit)
   return (
     <div>
       <ul>

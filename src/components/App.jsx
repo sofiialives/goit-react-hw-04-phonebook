@@ -1,32 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactsList } from './ContactsList/ContactList';
 import { nanoid } from 'nanoid';
 
 export function App() {
-  const [contacts, setContacts] = useState([
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ]);
-  const [filter, setFilter] = useState('');
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
-
-  useEffect(() => {
+  const [contacts, setContacts] = useState(() => {
     const strContacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(strContacts) ?? [];
-    setContacts(parsedContacts);
-  }, []);
+    const parsedContacts = JSON.parse(strContacts) ?? [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ];
+    return parsedContacts;
+  });
+  const [filter, setFilter] = useState('');
 
   useEffect(() => {
     const strContacts = JSON.stringify(contacts);
     localStorage.setItem('contacts', strContacts);
   }, [contacts]);
 
-  const addContact = () => {
+  const addContact = ({name, number}) => {
     const isExist = contacts.find(
       contact => contact.name.toLowerCase() === name.toLowerCase()
     );
@@ -40,29 +36,11 @@ export function App() {
       number,
     };
     setContacts(prevContact => [...prevContact, newContact]);
-    setName('');
-    setNumber('');
   };
 
   const handleChange = e => {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-
-      case 'number':
-        setNumber(value);
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  const handleChangeFilter = e => {
-    setFilter(e.target.value.toLowerCase());
+    const { value } = e.target;
+    setFilter(value);
   };
 
   const deleteContact = id => {
@@ -70,9 +48,12 @@ export function App() {
       prevContacts.filter(contact => contact.id !== id)
     );
   };
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLocaleLowerCase())
-  );
+
+  const filteredContacts = useMemo(() => {
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLocaleLowerCase())
+    );
+  }, [contacts, filter]);
 
   return (
     <div>
