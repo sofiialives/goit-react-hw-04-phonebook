@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import css from './ContactForm.module.css';
 import { nanoid } from 'nanoid';
 
-export function ContactForm(props) {
+export function ContactForm({addContact}) {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -26,7 +26,7 @@ export function ContactForm(props) {
 
   const handleSubmit = evt => {
     evt.preventDefault();
-    props.addContact({ name, number });
+    addContact({ name, number });
     setName('');
     setNumber('');
   };
