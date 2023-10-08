@@ -22,7 +22,7 @@ export function App() {
     localStorage.setItem('contacts', strContacts);
   }, [contacts]);
 
-  const addContact = ({name, number}) => {
+  const addContact = ({ name, number }) => {
     const isExist = contacts.find(
       contact => contact.name.toLowerCase() === name.toLowerCase()
     );
